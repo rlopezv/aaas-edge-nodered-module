@@ -1,0 +1,274 @@
+[
+    {
+        "id": "e9c73e03.dd036",
+        "type": "tab",
+        "label": "LoRaWAN REST",
+        "disabled": true,
+        "info": "Flow in charge of handling the HTTP REST requests fowarded by the LoRa Server.\nIt will transform the messages to the correspondent json-schema."
+    },
+    {
+        "id": "8b8342cf.39433",
+        "type": "tab",
+        "label": "LoRaWAN MQTT",
+        "disabled": false,
+        "info": "Flow in charge of handling the MQTT messages fowarded by the LoRa Server.\nIt will transform the messages to the correspondent json-schema."
+    },
+    {
+        "id": "608d2d15.8c7f44",
+        "type": "moduleclient",
+        "z": ""
+    },
+    {
+        "id": "3f77ef05.865e1",
+        "type": "mqtt-broker",
+        "z": "",
+        "name": "LoRa Broker",
+        "broker": "192.168.1.72",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    },
+    {
+        "id": "aba26ec4.f57be",
+        "type": "http in",
+        "z": "e9c73e03.dd036",
+        "name": "LoRa Data",
+        "url": "/lora/data",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 100,
+        "y": 120,
+        "wires": [
+            [
+                "25860335.23a01c",
+                "3146bf73.808f8"
+            ]
+        ]
+    },
+    {
+        "id": "3146bf73.808f8",
+        "type": "http response",
+        "z": "e9c73e03.dd036",
+        "name": "HTTP Response",
+        "statusCode": "200",
+        "headers": {},
+        "x": 320,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "25860335.23a01c",
+        "type": "function",
+        "z": "e9c73e03.dd036",
+        "name": "Process Data Message",
+        "func": "//message content\nconst TYPE = \"DATA\";\nvar result = {};\nvar data = {};\ndata.type = TYPE;\ndata.application = msg.payload.applicationName;\ndata.gateway = msg.payload.rxInfo[0].name;\ndata.gatewayId = msg.payload.rxInfo[0].gatewayID;\ndata.device = msg.payload.deviceName;\ndata.deviceId = msg.payload.devEUI;\ndata.deviceType = msg.payload.object.type;\ndata.data = msg.payload.object;\ndata.gatewayTime= msg.payload.rxInfo[0].time;\ndata.edgeTime = new Date().toISOString();\n\nresult.payload = data;\n\nreturn result;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 370,
+        "y": 60,
+        "wires": [
+            [
+                "77b23dbd.ef50d4",
+                "3b9c5762.5a2ab8"
+            ]
+        ]
+    },
+    {
+        "id": "fe8dfd57.e4755",
+        "type": "http in",
+        "z": "e9c73e03.dd036",
+        "name": "LoRa Join",
+        "url": "/lora/join",
+        "method": "post",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 100,
+        "y": 280,
+        "wires": [
+            [
+                "6c8c046.512c1fc",
+                "3146bf73.808f8"
+            ]
+        ]
+    },
+    {
+        "id": "6c8c046.512c1fc",
+        "type": "function",
+        "z": "e9c73e03.dd036",
+        "name": "Process Join Message",
+        "func": "//message content\nconst TYPE = \"JOIN\";\n\nvar result = {};\nvar data = {};\ndata.data = msg.payload.object;\ndata.application = msg.payload.applicationName;\ndata.device = msg.payload.deviceName;\ndata.deviceId = msg.payload.devEUI;\ndata.type = TYPE;\nresult.payload = data;\n\nreturn result;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 360,
+        "y": 360,
+        "wires": [
+            [
+                "77b23dbd.ef50d4",
+                "3b9c5762.5a2ab8"
+            ]
+        ]
+    },
+    {
+        "id": "77b23dbd.ef50d4",
+        "type": "debug",
+        "z": "e9c73e03.dd036",
+        "name": "Message",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 520,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "3b9c5762.5a2ab8",
+        "type": "moduleoutput",
+        "z": "e9c73e03.dd036",
+        "client": "608d2d15.8c7f44",
+        "output": "output1",
+        "x": 770,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "bbffcb53.15f3b8",
+        "type": "function",
+        "z": "8b8342cf.39433",
+        "name": "Process Data Message",
+        "func": "//message content\nconst TYPE = \"DATA\";\nvar result = {};\nvar data = {};\ndata.type = TYPE;\ndata.application = msg.payload.applicationName;\ndata.gateway = msg.payload.rxInfo[0].name;\ndata.gatewayId = msg.payload.rxInfo[0].gatewayID;\ndata.device = msg.payload.deviceName;\ndata.deviceId = msg.payload.devEUI;\ndata.deviceType = msg.payload.object.type;\ndata.data = msg.payload.object;\ndata.gatewayTime= msg.payload.rxInfo[0].time;\ndata.edgeTime = new Date().toISOString();\n\nresult.payload = data;\n\nreturn result;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 370,
+        "y": 60,
+        "wires": [
+            [
+                "b518a7cb.6d0a18",
+                "ea49fc82.c0407"
+            ]
+        ]
+    },
+    {
+        "id": "1e044bd7.ce59d4",
+        "type": "function",
+        "z": "8b8342cf.39433",
+        "name": "Process Join Message",
+        "func": "//message content\nconst TYPE = \"JOIN\";\n\nvar result = {};\nvar data = {};\ndata.data = msg.payload.object;\ndata.application = msg.payload.applicationName;\ndata.device = msg.payload.deviceName;\ndata.deviceId = msg.payload.devEUI;\ndata.type = TYPE;\nresult.payload = data;\n\nreturn result;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 360,
+        "y": 360,
+        "wires": [
+            [
+                "b518a7cb.6d0a18",
+                "ea49fc82.c0407"
+            ]
+        ]
+    },
+    {
+        "id": "b518a7cb.6d0a18",
+        "type": "debug",
+        "z": "8b8342cf.39433",
+        "name": "Message",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "x": 520,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "ea49fc82.c0407",
+        "type": "moduleoutput",
+        "z": "8b8342cf.39433",
+        "client": "608d2d15.8c7f44",
+        "output": "output1",
+        "x": 770,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "8caf55d9.47d6e8",
+        "type": "mqtt in",
+        "z": "8b8342cf.39433",
+        "name": "MQTT Request",
+        "topic": "application/#",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "3f77ef05.865e1",
+        "x": 100,
+        "y": 220,
+        "wires": [
+            [
+                "d8dd447a.caf038",
+                "5bfdd812.b4b488"
+            ]
+        ]
+    },
+    {
+        "id": "d8dd447a.caf038",
+        "type": "debug",
+        "z": "8b8342cf.39433",
+        "name": "MQTT Message",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "x": 160,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "5bfdd812.b4b488",
+        "type": "switch",
+        "z": "8b8342cf.39433",
+        "name": "",
+        "property": "topic",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "cont",
+                "v": "rx",
+                "vt": "str"
+            },
+            {
+                "t": "cont",
+                "v": "join",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 320,
+        "y": 220,
+        "wires": [
+            [
+                "bbffcb53.15f3b8"
+            ],
+            [
+                "1e044bd7.ce59d4"
+            ]
+        ]
+    }
+]
