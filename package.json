@@ -14,13 +14,7 @@
     },
     "contributors": [
         {
-            "name": "Dave Conway-Jones"
-        },
-        {
-            "name": "Nick O'Leary"
-        },
-        {
-            "name": "James Thomas"
+            "name": "Ramón López Viana"
         }
     ],
     "dependencies": {
@@ -29,7 +23,9 @@
         "node-red-node-base64": "*",
         "node-red-node-suncalc": "*",
         "node-red-node-random": "*",
-        "node-red-contrib-azure-iot-edge" : "*"
+        "node-red-contrib-azure-iot-edge" : "*",
+        "node-red-dashboard":"*",
+        "node-red-contrib-postgres-variable":"*"
     },
     "engines": {
         "node": "8.*.*"
