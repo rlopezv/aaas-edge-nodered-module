@@ -25,7 +25,9 @@
         "node-red-node-random": "*",
         "node-red-contrib-azure-iot-edge" : "*",
         "node-red-dashboard":"*",
-        "node-red-contrib-postgres-variable":"*"
+        "node-red-contrib-postgres-variable":"*",
+        "node-red-contrib-ui-led":"*",
+        "node-red-contrib-ui-level":"*"
     },
     "engines": {
         "node": "8.*.*"
