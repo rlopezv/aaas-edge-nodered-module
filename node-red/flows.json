@@ -151,7 +151,7 @@
       "type": "function",
       "z": "8b8342cf.39433",
       "name": "Process Data Message",
-      "func": "//message content\nconst TYPE = \"DATA\";\nvar result = {};\nvar data = {};\ndata.type = TYPE;\ndata.application = msg.payload.applicationName;\ndata.gateway = msg.payload.rxInfo[0].name;\ndata.gateway_Id = msg.payload.rxInfo[0].gatewayID;\ndata.device = msg.payload.deviceName;\ndata.device_id = msg.payload.devEUI;\ndata.device_type = msg.payload.object.type;\ndata.data = msg.payload.object;\ndata.gateway_time= msg.payload.rxInfo[0].time;\ndata.edge_time = new Date().toISOString();\n\nresult.payload = data;\n\nreturn result;",
+      "func": "//message content\nconst TYPE = \"DATA\";\nvar result = {};\nvar data = {};\ndata.type = TYPE;\ndata.application = msg.payload.applicationName;\ndata.gateway = msg.payload.rxInfo[0].name;\ndata.gateway_id = msg.payload.rxInfo[0].gatewayID;\ndata.device = msg.payload.deviceName;\ndata.device_id = msg.payload.devEUI;\ndata.device_type = msg.payload.object.type;\ndata.data = msg.payload.object;\ndata.gateway_time= msg.payload.rxInfo[0].time;\ndata.edge_time = new Date().toISOString();\n\nresult.payload = data;\n\nreturn result;",
       "outputs": 1,
       "noerr": 0,
       "x": 410,
