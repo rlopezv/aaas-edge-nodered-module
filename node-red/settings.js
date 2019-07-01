@@ -271,5 +271,15 @@ module.exports = {
             // To enable the Projects feature, set this value to true
             enabled: false
         }
+    },
+    pgConnects: {
+        docker: {
+            user: "postgres",
+            password: "docker",
+            host: "postgres",
+            port: "5432",
+            database: "aaas_db",
+            ssl: false // true/false
+         }
     }
 }

@@ -61,7 +61,7 @@
     "hostname": "postgres",
     "port": "5432",
     "db": "aaas_db",
-    "username":"postgres",
+    "user":"postgres",
     "password":"docker",
     "ssl": false
   },
