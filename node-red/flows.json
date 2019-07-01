@@ -61,6 +61,8 @@
     "hostname": "postgres",
     "port": "5432",
     "db": "aaas_db",
+    "username":"postgres",
+    "password":"docker",
     "ssl": false
   },
   {
@@ -645,7 +647,7 @@
     "type": "debug",
     "z": "8b8342cf.39433",
     "name": "Input Message",
-    "active": true,
+    "active": false,
     "tosidebar": true,
     "console": false,
     "tostatus": false,
@@ -677,7 +679,7 @@
     "type": "debug",
     "z": "8b8342cf.39433",
     "name": "MQTT Command",
-    "active": true,
+    "active": false,
     "tosidebar": true,
     "console": false,
     "tostatus": false,
@@ -1149,15 +1151,15 @@
     "type": "ui_toast",
     "z": "11cdd89d.420ba7",
     "position": "top right",
-    "displayTime": "3",
+    "displayTime": "10",
     "highlight": "yellow",
     "outputs": 0,
     "ok": "OK",
     "cancel": "",
     "topic": "",
     "name": "Alert",
-    "x": 510,
-    "y": 500,
+    "x": 710,
+    "y": 760,
     "wires": []
   },
   {
@@ -1307,7 +1309,7 @@
     "order": 0,
     "width": "24",
     "height": "6",
-    "format": "<style>\n    {{msg.style}}\n</style>\n\n<table>\n  <tr ng-repeat=\"obj in msg.payload\">\n    <td>{{ obj.device }}</td>\n    <td>{{ obj.message }}</td>\n  </tr>\n</table>",
+    "format": "<style>\n    {{msg.style}}\n</style>\n\n<table>\n  <tr ng-repeat=\"obj in msg.payload\">\n    <td>{{ obj.device }}</td>\n    <td>{{ obj.message }}</td>\n    <td>{{ obj.timestamp }}</td>\n  </tr>\n</table>",
     "storeOutMessages": true,
     "fwdInMessages": true,
     "templateScope": "local",
@@ -1335,7 +1337,8 @@
         "8124d40c.ebdad8"
       ],
       [
-        "38bee405.d8c95c"
+        "38bee405.d8c95c",
+        "d2cc61d2.2b901"
       ]
     ]
   },
@@ -1609,7 +1612,7 @@
     "topic": "",
     "payload": "",
     "payloadType": "date",
-    "repeat": "",
+    "repeat": "3600",
     "crontab": "",
     "once": true,
     "onceDelay": "10",
@@ -1731,7 +1734,7 @@
     "type": "debug",
     "z": "11cdd89d.420ba7",
     "name": "ALERTS",
-    "active": true,
+    "active": false,
     "tosidebar": true,
     "console": false,
     "tostatus": false,
@@ -1746,7 +1749,7 @@
     "type": "function",
     "z": "11cdd89d.420ba7",
     "name": "Prepare Summaries",
-    "func": "function process(input) {\n    var result = {\n        series:[],\n        data:[],\n        labels:[]\n    };\n    //Extracting labels\n    for (const val of Object.getOwnPropertyNames(input)) {\n        result.labels.push(val);\n\n        //Extracting name series\n        for (const key of Object.getOwnPropertyNames(input[val])) {\n            var pos = result.series.indexOf(key);\n            var values = [];\n            if (pos<0) {\n                result.series.push(key);\n                result.data.push(values);\n            } else {\n                values = result.data[pos];\n            }\n            values.push(input[val][key]);\n        }\n    }\n    node.warn(result);\n    return [result];\n}\n\nvar msgTest = {};\n\nmsgTest.payload = [{\n    \"series\": [\"X\", \"Y\", \"A\"],\n    \"data\": [ [5.54,6], [3,8] ,[1,1]],\n    \"labels\": [ \"Jan\", \"Feb\", \"Mar\"]\n}];\n\nvar msgPLANT = {}\nif (msg.PLANT) {\nmsgPLANT.payload = process(msg.PLANT);\n}\nvar msgWEATHER = {}\nif (msg.WEATHER) {\nmsgWEATHER.payload = process(msg.WEATHER);\n}\nnode.warn(msgWEATHER);\nreturn [msgWEATHER,msgPLANT];",
+    "func": "function process(input) {\n    var result = {\n        series:[],\n        data:[],\n        labels:[]\n    };\n    //Extracting labels\n    for (const val of Object.getOwnPropertyNames(input)) {\n        result.labels.push(val);\n\n        //Extracting name series\n        for (const key of Object.getOwnPropertyNames(input[val])) {\n            var pos = result.series.indexOf(key);\n            var values = [];\n            if (pos<0) {\n                result.series.push(key);\n                result.data.push(values);\n            } else {\n                values = result.data[pos];\n            }\n            values.push(input[val][key]);\n        }\n    }\n    return [result];\n}\n\nvar msgTest = {};\n\nmsgTest.payload = [{\n    \"series\": [\"X\", \"Y\", \"A\"],\n    \"data\": [ [5.54,6], [3,8] ,[1,1]],\n    \"labels\": [ \"Jan\", \"Feb\", \"Mar\"]\n}];\n\nvar msgPLANT = {}\nif (msg.PLANT) {\nmsgPLANT.payload = process(msg.PLANT);\n}\nvar msgWEATHER = {}\nif (msg.WEATHER) {\nmsgWEATHER.payload = process(msg.WEATHER);\n}\nnode.warn(msgWEATHER);\nreturn [msgWEATHER,msgPLANT];",
     "outputs": 2,
     "noerr": 0,
     "x": 790,
@@ -1785,7 +1788,7 @@
     "type": "function",
     "z": "75747c34.950644",
     "name": "Prepare Telemetry",
-    "func": "msg.queryParameters = msg.queryParameters || {};\n\nvar timestamp = flow.get(\"telemetryTimestamp\");\n\n//Last two days\nif (!timestamp) {\n   timestamp = new Date(new Date() - 2*24*60*60*1000).getTime()     \n}\nflow.set(\"telemetryTimestamp\",new Date().getTime()); \n\nmsg.queryParameters.timestamp = timestamp;\n\nreturn msg;",
+    "func": "msg.queryParameters = msg.queryParameters || {};\n\nvar timestamp = flow.get(\"telemetryTimestamp\");\n\n//Last two days\nif (timestamp) {\n   timestamp = new Date(new Date() - 2*24*60*60*1000).getTime()     \n}\nflow.set(\"telemetryTimestamp\",new Date().getTime()); \n\nmsg.queryParameters.timestamp = timestamp;\n\nreturn msg;",
     "outputs": 1,
     "noerr": 0,
     "x": 190,
@@ -1989,7 +1992,7 @@
     "type": "function",
     "z": "75747c34.950644",
     "name": "Prepare Alert",
-    "func": "msg.queryParameters = msg.queryParameters || {};\n\nvar timestamp = flow.get(\"alertTimestamp\");\n\n//Last two days\nif (timestamp) {\n   timestamp = new Date(new Date() - 2*24*60*60*1000).getTime()     \n}\nflow.set(\"alertTimestamp\",new Date().getTime()); \n\nmsg.queryParameters.timestamp = timestamp;\n\nreturn msg;",
+    "func": "msg.queryParameters = msg.queryParameters || {};\n\nvar timestamp = flow.get(\"alertTimestamp\");\n\n//Last two days\nif (!timestamp) {\n   timestamp = new Date(new Date() - 2*24*60*60*1000).getTime()     \n}\nflow.set(\"alertTimestamp\",new Date().getTime()); \n\nmsg.queryParameters.timestamp = timestamp;\n\nreturn msg;",
     "outputs": 1,
     "noerr": 0,
     "x": 190,
@@ -2320,5 +2323,22 @@
     "x": 270,
     "y": 1060,
     "wires": []
+  },
+  {
+    "id": "d2cc61d2.2b901",
+    "type": "function",
+    "z": "11cdd89d.420ba7",
+    "name": "processAlertMessage",
+    "func": "var data = msg.payload;\n\nif (msg.payload && Array.isArray(msg.payload)) {\n    for (const alert of msg.payload) {\n        var alertMessage = {};\n        alertMessage.topic = \"ALERT\";\n        alertMessage.payload = \"[\"+alert.timestamp+\"] \" + alert.device+\":\"+alert.message;\n        node.send(alertMessage);\n    }\n    \n}\n",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 400,
+    "y": 740,
+    "wires": [
+      [
+        "d5ebab47.ea9db8",
+        "f304eab3.b991e8"
+      ]
+    ]
   }
 ]
