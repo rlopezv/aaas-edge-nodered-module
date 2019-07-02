@@ -22,6 +22,8 @@ USER node-red
 COPY package.json /usr/src/node-red/
 #include flows
 COPY node-red/flows.json /data
+#include settings
+COPY node-red/settings.js /data
 RUN npm install
 
 # User configuration directory volume

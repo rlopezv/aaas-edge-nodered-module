@@ -18,6 +18,8 @@ USER node-red
 
 # package.json contains Node-RED NPM module and node dependencies
 COPY package.json /usr/src/node-red/
+#include settings
+COPY node-red/settings.js /data
 RUN npm install
 
 # User configuration directory volume

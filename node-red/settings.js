@@ -273,10 +273,18 @@ module.exports = {
         }
     },
     pgConnects: {
-        docker: {
+        postgres: {
             user: "postgres",
             password: "docker",
             host: "postgres",
+            port: "5432",
+            database: "aaas_db",
+            ssl: false // true/false
+         },
+         localhost: {
+            user: "postgres",
+            password: "docker",
+            host: "localhost",
             port: "5432",
             database: "aaas_db",
             ssl: false // true/false
